@@ -82,6 +82,16 @@
         
         <!-- Header / Progress Bar -->
         <div class="bg-brand-600 px-8 py-6 text-white text-center">
+            
+            <!-- Logo & Identitas Sekolah -->
+            <div class="flex flex-col items-center justify-center mb-6">
+                <div class="bg-white/20 p-2.5 rounded-2xl backdrop-blur-sm mb-3 border border-white/30 shadow-sm">
+                    <img src="https://i.ibb.co.com/PG59mBdt/Logo-SMA-Baru.png" alt="Logo SMAS Al-Multazam" class="h-16 w-auto object-contain drop-shadow-md">
+                </div>
+                <h2 class="text-sm sm:text-base font-bold tracking-wider uppercase text-white">SMAS Al-Multazam</h2>
+                <p class="text-xs sm:text-sm text-brand-100 font-medium tracking-wide">Kabupaten Mojokerto</p>
+            </div>
+
             <h1 class="text-2xl sm:text-3xl font-bold mb-2"><i class="fa-solid fa-seedling mr-2"></i>Ruang Refleksi BK</h1>
             <p class="text-brand-100 text-sm sm:text-base font-light">Tempat aman untuk bercerita tentang proses belajarmu semester ini.</p>
             
@@ -308,10 +318,13 @@
                     </button>
                 </div>
 
-                <!-- Header khusus untuk hasil print PDF -->
-                <div class="hidden print:block text-center mb-8 border-b-2 border-slate-800 pb-4">
-                    <h1 class="text-2xl font-bold uppercase tracking-wide">Laporan Refleksi Bimbingan Konseling</h1>
-                    <p id="print-class-title" class="text-lg mt-1 font-medium">Kelas: Semua Kelas</p>
+                <!-- Header khusus untuk hasil print PDF (Kop Surat) -->
+                <div class="hidden print:block text-center mb-8 border-b-4 border-double border-slate-800 pb-5">
+                    <img src="https://i.ibb.co.com/PG59mBdt/Logo-SMA-Baru.png" alt="Logo SMAS Al-Multazam" class="h-24 w-auto mx-auto mb-3">
+                    <h2 class="text-2xl font-bold uppercase tracking-widest text-slate-900">SMAS Al-Multazam</h2>
+                    <p class="text-sm font-semibold uppercase text-slate-700 mb-4 tracking-wide">Kabupaten Mojokerto</p>
+                    <h1 class="text-xl font-bold uppercase tracking-wide mt-2">Laporan Refleksi Bimbingan Konseling</h1>
+                    <p id="print-class-title" class="text-lg mt-1 font-medium text-slate-600">Kelas: Semua Kelas</p>
                 </div>
 
                 <div class="overflow-x-auto rounded-xl border border-slate-200 shadow-sm">
