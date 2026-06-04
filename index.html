@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ruang Cerita & Refleksi BK</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0fdfa',
+                            100: '#ccfbf1',
+                            500: '#14b8a6',
+                            600: '#0d9488',
+                            700: '#0f766e',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom styles for smooth transitions and textareas */
+        body {
+            background: linear-gradient(135deg, #f0fdfa 0%, #e0f2fe 100%);
+            min-height: 100vh;
+        }
+        .step-container {
+            transition: all 0.5s ease-in-out;
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .step-hidden {
+            opacity: 0;
+            transform: translateY(20px);
+            pointer-events: none;
+            position: absolute;
+            visibility: hidden;
+        }
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+        /* Custom scrollbar for textareas */
+        textarea::-webkit-scrollbar {
+            width: 8px;
+        }
+        textarea::-webkit-scrollbar-track {
+            background: #f1f1f1; 
+            border-radius: 4px;
+        }
+        textarea::-webkit-scrollbar-thumb {
+            background: #cbd5e1; 
+            border-radius: 4px;
+        }
+        textarea::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8; 
+        }
+        
+        /* Pengaturan Khusus untuk Cetak PDF */
+        @media print {
+            body { background: white !important; padding: 0 !important; }
+            .no-print { display: none !important; }
+            .print-break { page-break-inside: avoid; }
+            .shadow-xl { box-shadow: none !important; }
+            /* Memaksa background color muncul di PDF */
+            * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+        }
+    </style>
+</head>
+<body class="text-slate-800 antialiased flex flex-col items-center justify-center py-10 px-4 sm:px-6 lg:px-8 min-h-screen">
+
+    <div id="main-card" class="max-w-2xl w-full bg-white rounded-3xl shadow-xl overflow-hidden relative transition-all duration-500">
+        
+        <!-- Header / Progress Bar -->
+        <div class="bg-brand-600 px-8 py-6 text-white text-center">
+            <h1 class="text-2xl sm:text-3xl font-bold mb-2"><i class="fa-solid fa-seedling mr-2"></i>Ruang Refleksi BK</h1>
+            <p class="text-brand-100 text-sm sm:text-base font-light">Tempat aman untuk bercerita tentang proses belajarmu semester ini.</p>
+            
+            <div class="flex justify-center items-center mt-6 space-x-4">
+                <div class="flex items-center">
+                    <div id="dot-1" class="w-8 h-8 rounded-full bg-white text-brand-600 flex items-center justify-center font-bold text-sm transition-colors">1</div>
+                    <span class="ml-2 text-xs sm:text-sm font-medium">Data Diri</span>
+                </div>
+                <div class="w-10 sm:w-16 h-1 bg-brand-500/50 rounded">
+                    <div id="progress-line" class="h-full bg-white rounded w-0 transition-all duration-500"></div>
+                </div>
+                <div class="flex items-center">
+                    <div id="dot-2" class="w-8 h-8 rounded-full bg-brand-700 text-white flex items-center justify-center font-bold text-sm transition-colors border border-brand-500">2</div>
+                    <span class="ml-2 text-xs sm:text-sm font-medium text-brand-100">Refleksi</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="p-6 sm:p-10 relative min-h-[400px]">
+            
+            <!-- STEP 1: DATA DIRI -->
+            <div id="step-1" class="step-container">
+                <div class="mb-6">
+                    <h2 class="text-xl font-semibold text-slate-800 mb-1">Halo! Siapa namamu? 👋</h2>
+                    <p class="text-sm text-slate-500">Isi data dirimu dulu ya sebelum kita mulai bercerita.</p>
+                </div>
+
+                <div class="space-y-5">
+                    <!-- Nama -->
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Nama Lengkap</label>
+                        <input type="text" id="nama" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-shadow outline-none bg-slate-50" placeholder="Tulis namamu di sini..." required>
+                    </div>
+
+                    <!-- No Induk -->
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-1">Nomor Induk Siswa</label>
+                        <input type="number" id="no_induk" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-shadow outline-none bg-slate-50" placeholder="Contoh: 12345" required>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                        <!-- Kelas -->
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">Kelas</label>
+                            <div class="relative">
+                                <select id="kelas" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-shadow outline-none appearance-none bg-slate-50" required>
+                                    <option value="" disabled selected>Pilih kelasmu...</option>
+                                    <option value="X-A">X-A</option>
+                                    <option value="X-B">X-B</option>
+                                    <option value="XI-A">XI-A</option>
+                                    <option value="XI-B">XI-B</option>
+                                    <option value="XII-A">XII-A</option>
+                                    <option value="XII-B">XII-B</option>
+                                </select>
+                                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-500">
+                                    <i class="fa-solid fa-chevron-down text-xs"></i>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Pondok -->
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">Asrama / Pondok</label>
+                            <div class="relative">
+                                <select id="pondok" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-shadow outline-none appearance-none bg-slate-50" required>
+                                    <option value="" disabled selected>Pilih asrama...</option>
+                                    <option value="Putra">Putra</option>
+                                    <option value="Putri">Putri</option>
+                                </select>
+                                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-500">
+                                    <i class="fa-solid fa-chevron-down text-xs"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Semester -->
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-2">Semester Saat Ini</label>
+                        <div class="flex space-x-4">
+                            <label class="flex-1 cursor-pointer">
+                                <input type="radio" name="semester" value="Gasal" class="peer sr-only">
+                                <div class="text-center px-4 py-3 rounded-xl border border-slate-200 peer-checked:bg-brand-50 peer-checked:border-brand-500 peer-checked:text-brand-700 hover:bg-slate-50 transition-colors">
+                                    Gasal
+                                </div>
+                            </label>
+                            <label class="flex-1 cursor-pointer">
+                                <input type="radio" name="semester" value="Genap" class="peer sr-only">
+                                <div class="text-center px-4 py-3 rounded-xl border border-slate-200 peer-checked:bg-brand-50 peer-checked:border-brand-500 peer-checked:text-brand-700 hover:bg-slate-50 transition-colors">
+                                    Genap
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="error-step-1" class="text-red-500 text-sm mt-4 hidden"><i class="fa-solid fa-circle-exclamation mr-1"></i> Mohon lengkapi semua data diri terlebih dahulu.</div>
+
+                <div class="mt-8 flex justify-end">
+                    <button onclick="nextStep()" class="bg-brand-600 hover:bg-brand-700 text-white font-medium py-3 px-8 rounded-xl transition-colors shadow-md shadow-brand-500/30 flex items-center">
+                        Mulai Bercerita <i class="fa-solid fa-arrow-right ml-2"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- STEP 2: REFLEKSI -->
+            <div id="step-2" class="step-container step-hidden">
+                <div class="mb-6">
+                    <h2 class="text-xl font-semibold text-slate-800 mb-1">Ruang Amanmu 🤍</h2>
+                    <p class="text-sm text-slate-500">Tarik napas panjang... Tidak ada jawaban yang salah. Tuliskan saja apa yang benar-benar kamu rasakan.</p>
+                </div>
+
+                <div class="space-y-6">
+                    <!-- Pertanyaan 1 -->
+                    <div class="bg-slate-50 p-5 rounded-2xl border border-slate-100">
+                        <label class="block text-[15px] font-medium text-slate-800 mb-2 leading-relaxed">
+                            1. Coba ingat-ingat kembali, perasaan apa yang paling dominan/sering muncul saat kamu mengikuti bimbingan konseling di semester ini? <span class="text-slate-500 font-normal text-sm block mt-1">(Misal: senang, lega, bosan, bingung, merasa didengar, dll. Ceritakan alasannya ya!)</span>
+                        </label>
+                        <textarea id="q1" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-shadow outline-none mt-2" placeholder="Jujur saja, selama pelajaran BK aku merasa..."></textarea>
+                    </div>
+
+                    <!-- Pertanyaan 2 -->
+                    <div class="bg-slate-50 p-5 rounded-2xl border border-slate-100">
+                        <label class="block text-[15px] font-medium text-slate-800 mb-2 leading-relaxed">
+                            2. Adakah satu momen, cerita, aktivitas, atau topik yang paling membekas di hatimu selama pertemuan kita? <span class="text-slate-500 font-normal text-sm block mt-1">Kenapa hal itu sangat bermakna buatmu?</span>
+                        </label>
+                        <textarea id="q2" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-shadow outline-none mt-2" placeholder="Momen yang paling aku ingat adalah ketika..."></textarea>
+                    </div>
+
+                    <!-- Pertanyaan 3 -->
+                    <div class="bg-slate-50 p-5 rounded-2xl border border-slate-100">
+                        <label class="block text-[15px] font-medium text-slate-800 mb-2 leading-relaxed">
+                            3. Guru BK juga butuh masukan lho! Menurutmu, apa yang perlu Bapak/Ibu ubah, kurangi, atau pertahankan agar kamu merasa lebih nyaman belajar dan bercerita?
+                        </label>
+                        <textarea id="q3" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-shadow outline-none mt-2" placeholder="Menurutku, Bapak/Ibu guru sebaiknya..."></textarea>
+                    </div>
+
+                    <!-- Pertanyaan 4 (Bebas) -->
+                    <div class="bg-brand-50 p-5 rounded-2xl border border-brand-100">
+                        <label class="block text-[15px] font-medium text-brand-800 mb-2 leading-relaxed">
+                            4. Ruang Bebas (Uneg-uneg) 🎙️<span class="text-brand-600 font-normal text-sm block mt-1">Anggap ini ruang rahasiamu. Tuliskan apa saja yang selama ini ingin kamu sampaikan ke Bapak/Ibu guru BK tapi belum sempat atau malu mengatakannya. Keluarkan saja semuanya, tanpa filter!</span>
+                        </label>
+                        <textarea id="q4" class="w-full px-4 py-3 rounded-xl border border-brand-200 focus:ring-2 focus:ring-brand-500 focus:border-brand-500 transition-shadow outline-none mt-2 bg-white" placeholder="Sebenarnya, selama ini aku ingin bilang kalau..."></textarea>
+                    </div>
+                </div>
+
+                <div id="error-step-2" class="text-red-500 text-sm mt-4 hidden"><i class="fa-solid fa-circle-exclamation mr-1"></i> Mohon isi setidaknya sedikit cerita di setiap kotak ya, agar kami bisa memahamimu dengan baik.</div>
+
+                <div class="mt-8 flex justify-between items-center">
+                    <button onclick="prevStep()" class="text-slate-500 hover:text-slate-700 font-medium py-2 px-4 transition-colors flex items-center">
+                        <i class="fa-solid fa-arrow-left mr-2"></i> Kembali
+                    </button>
+                    <button onclick="submitForm()" id="submitBtn" class="bg-brand-600 hover:bg-brand-700 text-white font-medium py-3 px-8 rounded-xl transition-all shadow-md shadow-brand-500/30 flex items-center group">
+                        <span id="submitText">Kirim Refleksi</span> 
+                        <i id="submitIcon" class="fa-solid fa-paper-plane ml-2 group-hover:-translate-y-1 group-hover:translate-x-1 transition-transform"></i>
+                        <i id="loadingIcon" class="fa-solid fa-spinner fa-spin ml-2 hidden"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- STEP 3: SUCCESS PAGE -->
+            <div id="step-3" class="step-container step-hidden text-center py-10">
+                <div class="w-24 h-24 bg-brand-100 text-brand-600 rounded-full flex items-center justify-center text-4xl mx-auto mb-6 shadow-inner">
+                    <i class="fa-solid fa-heart"></i>
+                </div>
+                <h2 class="text-2xl font-bold text-slate-800 mb-3">Terima kasih banyak!</h2>
+                <p class="text-slate-600 mb-6 max-w-md mx-auto leading-relaxed">
+                    Keberanianmu untuk bercerita dan jujur sangat kami hargai. Semua tulisanmu aman dan akan menjadi bahan evaluasi yang sangat berharga untuk Bapak/Ibu guru BK ke depannya.
+                </p>
+                <p class="text-brand-600 font-medium italic">
+                    "Setiap perasaanmu itu valid, dan suaramu pantas untuk didengar."
+                </p>
+                
+                <button onclick="resetForm()" class="mt-10 text-slate-500 hover:text-brand-600 font-medium text-sm underline underline-offset-4 transition-colors">
+                    Kembali ke awal
+                </button>
+            </div>
+
+            <!-- STEP 4: ADMIN LOGIN -->
+            <div id="admin-login" class="step-container step-hidden text-center py-10">
+                <div class="w-20 h-20 bg-slate-100 text-slate-600 rounded-full flex items-center justify-center text-3xl mx-auto mb-6">
+                    <i class="fa-solid fa-lock"></i>
+                </div>
+                <h2 class="text-xl font-bold text-slate-800 mb-2">Login Admin BK</h2>
+                <p class="text-sm text-slate-500 mb-6">Masukkan kata sandi (demo: <strong>admin123</strong>) untuk melihat rekap.</p>
+                
+                <div class="max-w-xs mx-auto">
+                    <input type="password" id="admin-pass" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-brand-500 outline-none text-center mb-4" placeholder="Kata Sandi">
+                    <button id="admin-login-btn" onclick="checkAdminLogin()" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-medium py-3 rounded-xl transition-colors shadow-lg">
+                        Masuk
+                    </button>
+                    <p id="admin-error" class="text-red-500 text-sm mt-3 hidden">Kata sandi salah!</p>
+                    <button onclick="closeAdmin()" class="mt-6 text-slate-500 hover:text-slate-700 text-sm underline">Kembali ke Form</button>
+                </div>
+            </div>
+
+            <!-- STEP 5: ADMIN DASHBOARD -->
+            <div id="admin-dashboard" class="step-container step-hidden py-2 w-full">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4 no-print">
+                    <div>
+                        <h2 class="text-2xl font-bold text-slate-800">Dashboard Refleksi BK</h2>
+                        <p class="text-sm text-slate-500">Rekapitulasi curahan hati siswa semester ini.</p>
+                    </div>
+                    <button onclick="closeAdmin()" class="text-slate-400 hover:text-slate-600 bg-slate-100 hover:bg-slate-200 w-10 h-10 rounded-full flex items-center justify-center transition-colors">
+                        <i class="fa-solid fa-times text-lg"></i>
+                    </button>
+                </div>
+
+                <div class="flex flex-col sm:flex-row justify-between gap-4 mb-6 no-print bg-slate-50 p-4 rounded-xl border border-slate-100">
+                    <div class="flex gap-3 items-center">
+                        <label class="text-sm font-medium text-slate-700 whitespace-nowrap">Filter Kelas:</label>
+                        <select id="filter-kelas" onchange="renderAdminTable()" class="w-full sm:w-auto px-4 py-2 rounded-lg border border-slate-200 outline-none text-sm focus:ring-2 focus:ring-brand-500 bg-white">
+                            <option value="Semua">Semua Kelas</option>
+                            <option value="X-A">X-A</option>
+                            <option value="X-B">X-B</option>
+                            <option value="XI-A">XI-A</option>
+                            <option value="XI-B">XI-B</option>
+                            <option value="XII-A">XII-A</option>
+                            <option value="XII-B">XII-B</option>
+                        </select>
+                    </div>
+                    <button onclick="window.print()" class="bg-brand-600 hover:bg-brand-700 text-white px-5 py-2 rounded-lg text-sm font-medium flex items-center justify-center gap-2 shadow-md transition-colors whitespace-nowrap">
+                        <i class="fa-solid fa-file-pdf"></i> Cetak PDF
+                    </button>
+                </div>
+
+                <!-- Header khusus untuk hasil print PDF -->
+                <div class="hidden print:block text-center mb-8 border-b-2 border-slate-800 pb-4">
+                    <h1 class="text-2xl font-bold uppercase tracking-wide">Laporan Refleksi Bimbingan Konseling</h1>
+                    <p id="print-class-title" class="text-lg mt-1 font-medium">Kelas: Semua Kelas</p>
+                </div>
+
+                <div class="overflow-x-auto rounded-xl border border-slate-200 shadow-sm">
+                    <table class="w-full text-left text-sm">
+                        <thead class="bg-brand-50 border-b border-brand-100">
+                            <tr>
+                                <th class="px-4 py-4 font-semibold text-brand-800 w-48">Identitas</th>
+                                <th class="px-4 py-4 font-semibold text-brand-800 min-w-[200px]">1. Perasaan Dominan</th>
+                                <th class="px-4 py-4 font-semibold text-brand-800 min-w-[200px]">2. Momen Berkesan</th>
+                                <th class="px-4 py-4 font-semibold text-brand-800 min-w-[200px]">3. Masukan untuk BK</th>
+                                <th class="px-4 py-4 font-semibold text-brand-800 min-w-[200px]">4. Ruang Bebas (Uneg-uneg)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="admin-table-body" class="divide-y divide-slate-100 bg-white">
+                            <!-- Data rows injected by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Tombol Rahasia Admin di Footer -->
+    <button onclick="openAdmin()" class="mt-6 mb-4 text-slate-300 hover:text-brand-500 text-xs flex items-center gap-2 transition-colors no-print px-4 py-2 rounded-full hover:bg-white/50">
+        <i class="fa-solid fa-user-shield"></i> Akses Guru BK
+    </button>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Konfigurasi Firebase dari User
+        const firebaseConfig = {
+            apiKey: "AIzaSyBSHMFYjAobUCsmFr4RFi4KzcWLoe2rzB0",
+            authDomain: "refleksibk.firebaseapp.com",
+            projectId: "refleksibk",
+            storageBucket: "refleksibk.firebasestorage.app",
+            messagingSenderId: "891615932042",
+            appId: "1:891615932042:web:bc627c8a9a18b3bb840773"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+
+        // Login Anonim agar sistem diizinkan menulis/membaca data (Terkait Security Rules)
+        signInAnonymously(auth).catch((error) => console.error("Auth error:", error));
+
+        // DOM Elements
+        const step1 = document.getElementById('step-1');
+        const step2 = document.getElementById('step-2');
+        const step3 = document.getElementById('step-3');
+        
+        const dot1 = document.getElementById('dot-1');
+        const dot2 = document.getElementById('dot-2');
+        const progressLine = document.getElementById('progress-line');
+
+        const errorStep1 = document.getElementById('error-step-1');
+        const errorStep2 = document.getElementById('error-step-2');
+
+        // State variables
+        let formData = {};
+        let submissions = []; 
+
+        window.validateStep1 = function() {
+            const nama = document.getElementById('nama').value.trim();
+            const no_induk = document.getElementById('no_induk').value.trim();
+            const kelas = document.getElementById('kelas').value;
+            const pondok = document.getElementById('pondok').value;
+            const semester = document.querySelector('input[name="semester"]:checked');
+
+            if (!nama || !no_induk || !kelas || !pondok || !semester) {
+                errorStep1.classList.remove('hidden');
+                return false;
+            }
+
+            errorStep1.classList.add('hidden');
+            formData = {
+                ...formData,
+                nama, no_induk, kelas, pondok, semester: semester.value
+            };
+            return true;
+        }
+
+        window.validateStep2 = function() {
+            const q1 = document.getElementById('q1').value.trim();
+            const q2 = document.getElementById('q2').value.trim();
+            const q3 = document.getElementById('q3').value.trim();
+            const q4 = document.getElementById('q4').value.trim();
+
+            if (q1.length < 5 || q2.length < 5 || q3.length < 5 || q4.length < 5) {
+                errorStep2.classList.remove('hidden');
+                return false;
+            }
+
+            errorStep2.classList.add('hidden');
+            formData = {
+                ...formData,
+                refleksi: { q1, q2, q3, q4 },
+                timestamp: new Date().toISOString()
+            };
+            return true;
+        }
+
+        window.nextStep = function() {
+            if (window.validateStep1()) {
+                step1.classList.add('step-hidden');
+                setTimeout(() => {
+                    step1.style.display = 'none';
+                    step2.style.display = 'block';
+                    void step2.offsetWidth; 
+                    step2.classList.remove('step-hidden');
+                    
+                    progressLine.style.width = '100%';
+                    dot1.classList.replace('bg-white', 'bg-brand-700');
+                    dot1.classList.replace('text-brand-600', 'text-white');
+                    dot1.classList.add('border', 'border-brand-500');
+                    dot1.innerHTML = '<i class="fa-solid fa-check"></i>';
+                    
+                    dot2.classList.replace('bg-brand-700', 'bg-white');
+                    dot2.classList.replace('text-white', 'text-brand-600');
+                    dot2.classList.remove('border', 'border-brand-500');
+                }, 300); 
+            }
+        }
+
+        window.prevStep = function() {
+            step2.classList.add('step-hidden');
+            setTimeout(() => {
+                step2.style.display = 'none';
+                step1.style.display = 'block';
+                void step1.offsetWidth;
+                step1.classList.remove('step-hidden');
+
+                progressLine.style.width = '0%';
+                dot1.classList.replace('bg-brand-700', 'bg-white');
+                dot1.classList.replace('text-white', 'text-brand-600');
+                dot1.classList.remove('border', 'border-brand-500');
+                dot1.innerHTML = '1';
+                
+                dot2.classList.replace('bg-white', 'bg-brand-700');
+                dot2.classList.replace('text-brand-600', 'text-white');
+                dot2.classList.add('border', 'border-brand-500');
+            }, 300);
+        }
+
+        window.submitForm = async function() {
+            if (window.validateStep2()) {
+                const btn = document.getElementById('submitBtn');
+                const text = document.getElementById('submitText');
+                const icon = document.getElementById('submitIcon');
+                const loading = document.getElementById('loadingIcon');
+
+                btn.classList.add('opacity-80', 'cursor-not-allowed');
+                text.innerText = "Mengirim...";
+                icon.classList.add('hidden');
+                loading.classList.remove('hidden');
+
+                const currentData = {
+                    ...formData,
+                    timestamp: new Date().toISOString()
+                };
+
+                try {
+                    // MENGIRIM DATA KE FIREBASE
+                    await addDoc(collection(db, "refleksi_siswa"), currentData);
+                    console.log("Data berhasil disimpan ke Firebase");
+
+                    setTimeout(() => {
+                        step2.classList.add('step-hidden');
+                        document.querySelector('.bg-brand-600.px-8').classList.add('hidden'); 
+                        
+                        setTimeout(() => {
+                            step2.style.display = 'none';
+                            step3.style.display = 'block';
+                            void step3.offsetWidth;
+                            step3.classList.remove('step-hidden');
+                        }, 300);
+                    }, 500);
+
+                } catch (error) {
+                    console.error("Error saat menyimpan data: ", error);
+                    // Kembalikan tombol ke semula jika terjadi kegagalan (misal rules firebase ditolak)
+                    btn.classList.remove('opacity-80', 'cursor-not-allowed');
+                    text.innerText = "Kirim Refleksi";
+                    icon.classList.remove('hidden');
+                    loading.classList.add('hidden');
+                    
+                    const errMsg = document.createElement('div');
+                    errMsg.className = "text-red-500 text-sm mt-2 font-medium";
+                    errMsg.innerText = "Gagal mengirim data. Pastikan konfigurasi Firebase benar.";
+                    btn.parentElement.appendChild(errMsg);
+                    setTimeout(() => errMsg.remove(), 4000);
+                }
+            }
+        }
+
+        window.resetForm = function() {
+            document.getElementById('nama').value = '';
+            document.getElementById('no_induk').value = '';
+            document.getElementById('kelas').selectedIndex = 0;
+            document.getElementById('pondok').selectedIndex = 0;
+            const radios = document.getElementsByName('semester');
+            for(let i=0; i<radios.length; i++) radios[i].checked = false;
+            
+            document.getElementById('q1').value = '';
+            document.getElementById('q2').value = '';
+            document.getElementById('q3').value = '';
+            document.getElementById('q4').value = '';
+
+            const btn = document.getElementById('submitBtn');
+            const text = document.getElementById('submitText');
+            const icon = document.getElementById('submitIcon');
+            const loading = document.getElementById('loadingIcon');
+            
+            btn.classList.remove('opacity-80', 'cursor-not-allowed');
+            text.innerText = "Kirim Refleksi";
+            icon.classList.remove('hidden');
+            loading.classList.add('hidden');
+
+            step3.classList.add('step-hidden');
+            document.querySelector('.bg-brand-600.px-8').classList.remove('hidden');
+            
+            setTimeout(() => {
+                step3.style.display = 'none';
+                step1.style.display = 'block';
+                void step1.offsetWidth;
+                step1.classList.remove('step-hidden');
+
+                progressLine.style.width = '0%';
+                dot1.classList.replace('bg-brand-700', 'bg-white');
+                dot1.classList.replace('text-white', 'text-brand-600');
+                dot1.classList.remove('border', 'border-brand-500');
+                dot1.innerHTML = '1';
+                
+                dot2.classList.replace('bg-white', 'bg-brand-700');
+                dot2.classList.replace('text-brand-600', 'text-white');
+                dot2.classList.add('border', 'border-brand-500');
+            }, 300);
+        }
+        
+        const mainCard = document.getElementById('main-card');
+        const headerBar = document.querySelector('.bg-brand-600.px-8');
+        const adminLogin = document.getElementById('admin-login');
+        const adminDashboard = document.getElementById('admin-dashboard');
+
+        window.openAdmin = function() {
+            step1.classList.add('step-hidden'); step1.style.display = 'none';
+            step2.classList.add('step-hidden'); step2.style.display = 'none';
+            step3.classList.add('step-hidden'); step3.style.display = 'none';
+            headerBar.classList.add('hidden');
+            
+            adminLogin.style.display = 'block';
+            void adminLogin.offsetWidth;
+            adminLogin.classList.remove('step-hidden');
+        }
+
+        window.checkAdminLogin = async function() {
+            const pass = document.getElementById('admin-pass').value;
+            const btn = document.getElementById('admin-login-btn');
+
+            if (pass === 'admin123') { 
+                document.getElementById('admin-error').classList.add('hidden');
+                
+                // Animasi Loading Mengambil Data Firebase
+                const originalText = btn.innerText;
+                btn.innerText = "Memuat Database...";
+                btn.classList.add('opacity-75', 'cursor-wait');
+                btn.disabled = true;
+                
+                try {
+                    // MENGAMBIL DATA DARI FIREBASE
+                    const querySnapshot = await getDocs(collection(db, "refleksi_siswa"));
+                    
+                    submissions = []; // Kosongkan state lokal
+                    querySnapshot.forEach((doc) => {
+                        submissions.push({ id: doc.id, ...doc.data() });
+                    });
+                    
+                    // Urutkan data berdasarkan waktu dari yang paling terbaru
+                    submissions.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+                    adminLogin.classList.add('step-hidden');
+                    setTimeout(() => {
+                        adminLogin.style.display = 'none';
+                        mainCard.classList.remove('max-w-2xl');
+                        mainCard.classList.add('max-w-7xl');
+
+                        adminDashboard.style.display = 'block';
+                        void adminDashboard.offsetWidth;
+                        adminDashboard.classList.remove('step-hidden');
+                        
+                        window.renderAdminTable();
+                    }, 300);
+
+                } catch (error) {
+                    console.error("Error mengambil data dari Firebase:", error);
+                    document.getElementById('admin-error').innerText = "Gagal mengambil data database (Periksa akses Firestore).";
+                    document.getElementById('admin-error').classList.remove('hidden');
+                } finally {
+                    btn.innerText = originalText;
+                    btn.classList.remove('opacity-75', 'cursor-wait');
+                    btn.disabled = false;
+                }
+            } else {
+                document.getElementById('admin-error').innerText = "Kata sandi salah!";
+                document.getElementById('admin-error').classList.remove('hidden');
+            }
+        }
+
+        window.closeAdmin = function() {
+            mainCard.classList.remove('max-w-7xl');
+            mainCard.classList.add('max-w-2xl');
+            
+            adminLogin.classList.add('step-hidden'); adminLogin.style.display = 'none';
+            adminDashboard.classList.add('step-hidden'); adminDashboard.style.display = 'none';
+            
+            document.getElementById('admin-pass').value = '';
+            window.resetForm(); 
+        }
+
+        window.renderAdminTable = function() {
+            const tbody = document.getElementById('admin-table-body');
+            const filterKelas = document.getElementById('filter-kelas').value;
+            
+            document.getElementById('print-class-title').innerText = filterKelas === 'Semua' ? "Semua Kelas" : "Kelas: " + filterKelas;
+
+            tbody.innerHTML = '';
+
+            const filteredData = filterKelas === 'Semua' 
+                ? submissions 
+                : submissions.filter(s => s.kelas === filterKelas);
+
+            if (filteredData.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="px-4 py-12 text-center text-slate-500 italic">Belum ada data refleksi di database untuk kelas ini.</td></tr>';
+                return;
+            }
+
+            filteredData.forEach(data => {
+                const tr = document.createElement('tr');
+                tr.className = "print-break hover:bg-slate-50 transition-colors";
+                
+                let dateStr = "";
+                try {
+                    dateStr = new Date(data.timestamp).toLocaleString('id-ID', {day: 'numeric', month:'short', hour:'2-digit', minute:'2-digit'});
+                } catch(e) { dateStr = "-" }
+
+                tr.innerHTML = `
+                    <td class="px-4 py-4 border-t border-slate-100 align-top">
+                        <div class="font-bold text-slate-800 mb-1">${data.nama || '-'}</div>
+                        <div class="text-xs text-brand-700 bg-brand-100 inline-block px-2 py-1 rounded font-bold mb-1">${data.kelas || '-'}</div>
+                        <div class="text-xs text-slate-500">NIS: ${data.no_induk || '-'}</div>
+                        <div class="text-xs text-slate-500">Asrama: ${data.pondok || '-'}</div>
+                        <div class="text-xs text-slate-500">Smt: ${data.semester || '-'}</div>
+                        <div class="text-[10px] text-slate-400 mt-2">${dateStr}</div>
+                    </td>
+                    <td class="px-4 py-4 border-t border-slate-100 align-top text-[13px] text-slate-700 leading-relaxed max-w-xs whitespace-normal break-words">${data.refleksi?.q1 || '-'}</td>
+                    <td class="px-4 py-4 border-t border-slate-100 align-top text-[13px] text-slate-700 leading-relaxed max-w-xs whitespace-normal break-words">${data.refleksi?.q2 || '-'}</td>
+                    <td class="px-4 py-4 border-t border-slate-100 align-top text-[13px] text-slate-700 leading-relaxed max-w-xs whitespace-normal break-words">${data.refleksi?.q3 || '-'}</td>
+                    <td class="px-4 py-4 border-t border-slate-100 align-top text-[13px] font-medium text-brand-700 bg-brand-50/30 leading-relaxed max-w-xs whitespace-normal break-words">${data.refleksi?.q4 || '-'}</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+    </script>
+</body>
+</html>
